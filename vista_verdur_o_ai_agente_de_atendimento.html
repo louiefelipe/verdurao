@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Verdurão - Agente de Atendimento AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-emerald-500/20 px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-emerald-900/50">
+                🌿
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-emerald-400">Vista Verdurão AI</h1>
+                <p class="text-xs text-slate-400">Assistente Inteligente & Guardrail de Atendimento</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span id="systemStatus" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-2 h-2 mr-2 rounded-full bg-emerald-400 animate-pulse"></span> Sistema Ativo (Data Grounded)
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Panel Left: System Info & Mock Database Control -->
+        <section class="lg:col-span-1 bg-slate-900/60 border border-slate-800 rounded-xl p-5 flex flex-col space-y-4 backdrop-blur-sm">
+            <div>
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">Painel de Controle & Mock</h2>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Este protótipo demonstra o **Prompt P-03** com **Data Grounding** e fallback automático para atendente humano.
+                </p>
+            </div>
+
+            <!-- Database State -->
+            <div class="bg-slate-950 rounded-lg p-3 border border-slate-800 space-y-2 text-xs font-mono">
+                <div class="text-emerald-400 font-bold border-b border-slate-800 pb-1">📦 Simulação do Banco/Estoque (DF)</div>
+                <div>- Coleção Flona (Camisa Algodão Orgânico): <span class="text-emerald-300">45 un</span></div>
+                <div>- Coleção Cerrado (Bermuda Reciclada): <span class="text-emerald-300">12 un</span></div>
+                <div>- Prazo Entrega Plano Piloto: <span class="text-emerald-300">1 dia útil</span></div>
+                <div>- Prazo Entrega Águas Claras: <span class="text-emerald-300">2 dias úteis</span></div>
+                <div>- Política de Troca: <span class="text-emerald-300">30 dias sem custo</span></div>
+            </div>
+
+            <!-- Test Scenarios -->
+            <div class="space-y-2">
+                <label class="text-xs font-medium text-slate-300">💡 Testes Rápidos de Prompt (Clique para enviar):</label>
+                <div class="space-y-1.5">
+                    <button onclick="setTestQuery('Vocês têm camiseta da Coleção Flona em estoque no DF?')" class="w-full text-left text-xs bg-slate-800 hover:bg-slate-700 p-2 rounded text-slate-300 border border-slate-700 transition">
+                        ✅ Dúvida Valida (Estoque & Região)
+                    </button>
+                    <button onclick="setTestQuery('Qual o prazo de entrega para Águas Claras e política de troca?')" class="w-full text-left text-xs bg-slate-800 hover:bg-slate-700 p-2 rounded text-slate-300 border border-slate-700 transition">
+                        ✅ Dúvida Valida (Entrega & Troca)
+                    </button>
+                    <button onclick="setTestQuery('Vocês vendem tênis de corrida da Nike?')" class="w-full text-left text-xs bg-amber-950/40 hover:bg-amber-900/40 p-2 rounded text-amber-300 border border-amber-800/50 transition">
+                        ⚠️ Produto Fora do Catálogo (Redirecionar Humano)
+                    </button>
+                    <button onclick="setTestQuery('erro_sistema')" class="w-full text-left text-xs bg-red-950/40 hover:bg-red-900/40 p-2 rounded text-red-300 border border-red-800/50 transition">
+                        🛑 Simular Erro de Banco (Fallback Humano)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Architecture Info -->
+            <div class="pt-4 border-t border-slate-800 text-[11px] text-slate-500 space-y-1">
+                <div>• <strong>Versão Prompt:</strong> P-03 v2.0.0</div>
+                <div>• <strong>Temperatura:</strong> 0.2 (Baixa variabilidade)</div>
+                <div>• <strong>Guardrail:</strong> Anti-alucinação ativo</div>
+            </div>
+        </section>
+
+        <!-- Panel Right: Chat UI -->
+        <section class="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-xl flex flex-col overflow-hidden backdrop-blur-sm shadow-xl">
+            <!-- Chat Header -->
+            <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span class="text-xs font-semibold text-slate-300">Sessão de Atendimento E-commerce</span>
+                </div>
+                <button onclick="clearChat()" class="text-xs text-slate-500 hover:text-slate-300 transition">Limpar Chat</button>
+            </div>
+
+            <!-- Messages Log -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 chat-scroll min-h-[380px] max-h-[480px]">
+                <!-- Bot Welcome -->
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs text-white flex-shrink-0">
+                        🌿
+                    </div>
+                    <div class="bg-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none text-xs leading-relaxed max-w-[85%] border border-slate-700">
+                        Olá! Sou a IA de Atendimento da <strong>Vista Verdurão</strong>. Como posso te ajudar hoje com prazos, disponibilidade de estoque ou trocas no Distrito Federal?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <form id="chatForm" onsubmit="handleSendMessage(event)" class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2">
+                <input type="text" id="userInput" placeholder="Digite sua dúvida..." required class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 transition">
+                <button type="submit" id="sendBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-xs flex items-center space-x-1 transition shadow-lg shadow-emerald-950">
+                    <span>Enviar</span>
+                    <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        Residência Porto Digital IV - Squad 36 • Vista Verdurão
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        // MOCK DATABASE AND SYSTEM PROMPT CONFIG (Front-end Engine Simulation)
+        const MOCK_INVENTORY_DATABASE = {
+            status: "SUCCESS",
+            data: {
+                loja: "Vista Verdurão DF",
+                produtos: [
+                    { nome: "Camisa Algodão Orgânico Coleção Flona", tamanho: "M", quantidade: 45, preco: "R$ 119,90" },
+                    { nome: "Bermuda Reciclada Coleção Cerrado", tamanho: "G", quantidade: 12, preco: "R$ 149,90" }
+                ],
+                prazos_entrega_df: {
+                    "Plano Piloto": "1 dia útil",
+                    "Águas Claras": "2 dias úteis",
+                    "Taguatinga": "2 dias úteis"
+                },
+                politica_troca: "Prazo de 30 dias após o recebimento. Sem custo para a primeira troca na região do DF."
+            }
+        };
+
+        const P03_SYSTEM_PROMPT = `
+Você é a IA de Atendimento ao Cliente da Vista Verdurão. Sua missão é responder a dúvidas sobre disponibilidade de estoque, prazos de entrega e políticas de troca no DF.
+
+REGRAS DE CONDUTA E ESCOPO:
+1. Você APENAS responde com base no contexto fornecido no bloco [ESTOQUE E POLITICAS].
+2. Se a pergunta for sobre um produto fora do contexto, responda: "Não encontrei essa informação no nosso catálogo no momento. Vou transferir seu atendimento para um especialista humano."
+3. Se o status da consulta ao banco indicar erro ou indisponibilidade (status_consulta = "ERROR"), responda: "No momento, estou com dificuldades para acessar o sistema de estoque. Por favor, aguarde um instante enquanto conecto você a um de nossos atendentes."
+4. NUNCA prometa prazos, descontos ou trocas que não estejam nas regras fornecidas.
+5. Seja cortês, objetiva e mantenha o tom de voz acolhedor e sustentável da marca Vista Verdurão.
+`;
+
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const systemStatus = document.getElementById('systemStatus');
+        let isHumanTransferred = false;
+
+        function setTestQuery(query) {
+            userInput.value = query;
+        }
+
+        function clearChat() {
+            chatMessages.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs text-white flex-shrink-0">🌿</div>
+                    <div class="bg-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none text-xs leading-relaxed max-w-[85%] border border-slate-700">
+                        Histórico limpo. Como posso ajudar?
+                    </div>
+                </div>
+            `;
+            isHumanTransferred = false;
+            systemStatus.className = "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+            systemStatus.innerHTML = '<span class="w-2 h-2 mr-2 rounded-full bg-emerald-400 animate-pulse"></span> Sistema Ativo (Data Grounded)';
+        }
+
+        async function handleSendMessage(e) {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Render User Message
+            renderMessage('user', text);
+            userInput.value = '';
+
+            if (isHumanTransferred) {
+                renderMessage('assistant', 'Sua conversa já foi encaminhada para um atendente humano. Por favor, aguarde o contato na fila.');
+                return;
+            }
+
+            // Render Typing Indicator
+            const typingId = renderTyping();
+
+            // Simulate Agent Response with Latency & Deterministic Rule Logic
+            setTimeout(() => {
+                removeTyping(typingId);
+                const response = runAgentLogic(text);
+                renderMessage('assistant', response.content, response.transferredToHuman);
+
+                if (response.transferredToHuman) {
+                    isHumanTransferred = true;
+                    systemStatus.className = "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    systemStatus.innerHTML = '<span class="w-2 h-2 mr-2 rounded-full bg-amber-400"></span> Transferido p/ Atendimento Humano';
+                }
+            }, 800);
+        }
+
+        function runAgentLogic(message) {
+            const lowerMsg = message.toLowerCase();
+
+            // Trigger Mock Error
+            if (lowerMsg.includes('erro_sistema')) {
+                return {
+                    content: 'No momento, estou com dificuldades para acessar o sistema de estoque. Por favor, aguarde um instante enquanto conecto você a um de nossos atendentes.',
+                    transferredToHuman: true
+                };
+            }
+
+            // Check Outside Scope Product
+            if (lowerMsg.includes('tênis') || lowerMsg.includes('nike') || lowerMsg.includes('sapato') || lowerMsg.includes('relógio')) {
+                return {
+                    content: 'Não encontrei essa informação no nosso catálogo no momento. Vou transferir seu atendimento para um especialista humano.',
+                    transferredToHuman: true
+                };
+            }
+
+            // Valid Answer - Stock & Collection Flona
+            if (lowerMsg.includes('flona') || lowerMsg.includes('camisa') || lowerMsg.includes('algodão')) {
+                const prod = MOCK_INVENTORY_DATABASE.data.produtos[0];
+                return {
+                    content: `Temos sim! A **${prod.nome}** (tamanho ${prod.tamanho}) está disponível em nosso estoque com ${prod.quantidade} unidades no valor de ${prod.preco}.`,
+                    transferredToHuman: false
+                };
+            }
+
+            // Valid Answer - Shipping & Returns
+            if (lowerMsg.includes('prazo') || lowerMsg.includes('águas claras') || lowerMsg.includes('plano piloto') || lowerMsg.includes('troca')) {
+                const df = MOCK_INVENTORY_DATABASE.data.prazos_entrega_df;
+                const politica = MOCK_INVENTORY_DATABASE.data.politica_troca;
+                return {
+                    content: `Para **Águas Claras**, o prazo de entrega é de **${df["Águas Claras"]}** (e no Plano Piloto é de ${df["Plano Piloto"]}). Sobre trocas: ${politica}`,
+                    transferredToHuman: false
+                };
+            }
+
+            // Generic Fallback inside Scope
+            return {
+                content: `Consultei nosso sistema no DF. Posso te informar sobre as coleções **Flona** e **Cerrado**, prazos de entrega nas Regiões Administrativas do DF ou a política de trocas em até 30 dias.`,
+                transferredToHuman: false
+            };
+        }
+
+        function renderMessage(role, text, isHumanFallback = false) {
+            const isUser = role === 'user';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+
+            const iconHtml = isUser 
+                ? `<div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs text-white flex-shrink-0">👤</div>`
+                : `<div class="w-8 h-8 rounded-full ${isHumanFallback ? 'bg-amber-600' : 'bg-emerald-600'} flex items-center justify-center text-xs text-white flex-shrink-0">🌿</div>`;
+
+            const bgClass = isUser 
+                ? 'bg-emerald-600/90 text-white border-emerald-500/30' 
+                : (isHumanFallback ? 'bg-amber-950/40 text-amber-200 border-amber-800/50' : 'bg-slate-800 text-slate-200 border-slate-700');
+
+            const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            msgDiv.innerHTML = `
+                ${iconHtml}
+                <div class="${bgClass} p-3 rounded-2xl ${isUser ? 'rounded-tr-none' : 'rounded-tl-none'} text-xs leading-relaxed max-w-[85%] border shadow-sm">
+                    ${formattedText}
+                    ${isHumanFallback ? '<div class="mt-2 text-[10px] text-amber-400 font-semibold flex items-center"><i class="fa-solid fa-headset mr-1"></i> Sessão transferida para fila humana</div>' : ''}
+                </div>
+            `;
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function renderTyping() {
+            const typingDiv = document.createElement('div');
+            const id = 'typing_' + Date.now();
+            typingDiv.id = id;
+            typingDiv.className = 'flex items-start space-x-3';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs text-white flex-shrink-0">🌿</div>
+                <div class="bg-slate-800 text-slate-400 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-700 flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+    </script>
+</body>
+</html>
