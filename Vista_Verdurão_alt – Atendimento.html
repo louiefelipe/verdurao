@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vista Verdurão – Atendimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 1. CORES, FONTES E TEMAS (claro / escuro) ===== */
+  :root {
+    --bg: #F2F6EC;
+    --surface: #fff;
+    --ink: #10261A;
+    --muted: #4C6355;
+    --green: #0B6B3A;
+    --green-d: #084A29;
+    --yellow: #FFD21F;
+    --line: #D5E0CF;
+    --soft: #E7F0DF;
+    --warn-bg: #FFF4D6;
+    --warn-ink: #6B4A00;
+    --warn-line: #F0D78A;
+    --err-bg: #FDE8E4;
+    --err-ink: #8A2A1B;
+    --user: #0B6B3A;
+    --font: 'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --disp: 'Bricolage Grotesque','Figtree',system-ui,sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0B1A12;
+      --surface: #12261A;
+      --ink: #EAF3EA;
+      --muted: #9DB5A3;
+      --line: #24402F;
+      --soft: #1A3324;
+      --warn-bg: #3A2F0A;
+      --warn-ink: #FFE08A;
+      --warn-line: #6B5416;
+      --err-bg: #3B1A15;
+      --err-ink: #FFB4A6;
+      --user: #137A44;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0B1A12;
+    --surface: #12261A;
+    --ink: #EAF3EA;
+    --muted: #9DB5A3;
+    --line: #24402F;
+    --soft: #1A3324;
+    --warn-bg: #3A2F0A;
+    --warn-ink: #FFE08A;
+    --warn-line: #6B5416;
+    --err-bg: #3B1A15;
+    --err-ink: #FFB4A6;
+    --user: #137A44;
+  }
+
+  /* ===== 2. BASE ===== */
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  html {
+    scroll-padding-top: env(safe-area-inset-top,0px);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.5 var(--font);
+    min-height: 100vh;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px var(--green-d);
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  /* ===== 3. CABEÇALHO ===== */
+
+  header {
+    background: var(--green);
+    color: #fff;
+    border-radius: 0 0 50% 50%/0 0 28px 28px;
+    padding: 18px 20px 30px;
+  }
+
+  .bar {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--yellow);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+  }
+
+  .brand h1 {
+    margin: 0;
+    font: 800 24px/1 var(--disp);
+    letter-spacing: -.02em;
+  }
+
+  .brand p {
+    margin: 3px 0 0;
+    font-size: 14px;
+    opacity: .9;
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.14);
+    font-size: 14px;
+    font-weight: 700;
+    min-height: 40px;
+  }
+
+  .pill i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--yellow);
+  }
+
+  .pill.hum {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+  }
+
+  .pill.hum i {
+    background: #C98A00;
+  }
+
+  .icon-btn {
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255,255,255,.14);
+    color: #fff;
+    font-size: 18px;
+  }
+
+  /* ===== 4. LAYOUT GERAL ===== */
+
+  main {
+    max-width: 1080px;
+    margin: -14px auto 0;
+    padding: 0 16px 32px;
+    display: grid;
+    grid-template-columns: minmax(0,1.7fr) minmax(0,1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+
+  /* ===== 5. CHAT: estrutura ===== */
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    height: min(78vh,720px);
+    min-height: 480px;
+    overflow: hidden;
+  }
+
+  .chat-h {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .chat-h b {
+    font: 700 17px var(--disp);
+  }
+
+  .chat-h small {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .link {
+    background: none;
+    border: 0;
+    color: var(--green);
+    font-weight: 700;
+    padding: 10px;
+    min-height: 44px;
+    border-radius: 10px;
+    text-decoration: underline;
+  }
+
+  :root[data-theme="dark"] .link {
+    color: #7BDCA3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .link {
+      color: #7BDCA3;
+    }
+  }
+
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
+
+  /* ===== 6. CHAT: mensagens ===== */
+
+  .m {
+    display: flex;
+    gap: 10px;
+    max-width: 92%;
+  }
+
+  .m.u {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .av {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--yellow);
+    display: grid;
+    place-items: center;
+    flex: none;
+    font-size: 16px;
+  }
+
+  .m.u .av {
+    display: none;
+  }
+
+  .bub {
+    background: var(--soft);
+    border-radius: 4px 18px 18px 18px;
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+
+  .m.u .bub {
+    background: var(--user);
+    color: #fff;
+    border-radius: 18px 4px 18px 18px;
+  }
+
+  .m.h .bub {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border: 1px solid var(--warn-line);
+  }
+
+  .m.e .bub {
+    background: var(--err-bg);
+    color: var(--err-ink);
+  }
+
+  .bub p {
+    margin: 0 0 8px;
+  }
+
+  .bub p:last-child {
+    margin: 0;
+  }
+
+  .meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .m.u .meta {
+    color: rgba(255,255,255,.8);
+  }
+
+  /* ===== 7. CHAT: cards de produto e tabela de prazos ===== */
+
+  .prod {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    margin: 8px 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .prod strong {
+    font: 700 16px/1.2 var(--disp);
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 15px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    background: #CDEFD8;
+    color: #0A4F2B;
+  }
+
+  .tag.low {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+  }
+
+  .bar-s {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--soft);
+    overflow: hidden;
+  }
+
+  .bar-s span {
+    display: block;
+    height: 100%;
+    background: var(--green);
+  }
+
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 15px;
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .tbl td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tbl tr:last-child td {
+    border: 0;
+  }
+
+  .tbl tr.hit td {
+    background: var(--yellow);
+    color: #10261A;
+    font-weight: 700;
+  }
+
+  .src {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ===== 8. CHAT: digitando, sugestões, aviso e campo de texto ===== */
+
+  .typing {
+    display: flex;
+    gap: 5px;
+    padding: 4px 2px;
+  }
+
+  .typing i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: b 1s infinite;
+  }
+
+  .typing i:nth-child(2) {
+    animation-delay: .15s;
+  }
+
+  .typing i:nth-child(3) {
+    animation-delay: .3s;
+  }
+
+  @keyframes b {
+    50% {
+      transform: translateY(-5px);
+      opacity: .5;
+    }
+  }
+
+  .chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 18px 10px;
+    scrollbar-width: none;
+  }
+
+  .chip {
+    flex: none;
+    border: 1.5px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-weight: 700;
+    font-size: 14px;
+    min-height: 44px;
+  }
+
+  :root[data-theme="dark"] .chip {
+    color: #7BDCA3;
+    border-color: #7BDCA3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .chip {
+      color: #7BDCA3;
+      border-color: #7BDCA3;
+    }
+  }
+
+  .chip:hover {
+    background: var(--soft);
+  }
+
+  .banner {
+    display: none;
+    margin: 0 18px 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border: 1px solid var(--warn-line);
+    font-size: 14px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .banner.on {
+    display: flex;
+  }
+
+  form {
+    display: flex;
+    gap: 10px;
+    padding: 12px 18px 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    border-radius: 14px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    padding: 0 16px;
+    font: inherit;
+  }
+
+  input:focus {
+    border-color: var(--green);
+  }
+
+  .send {
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 14px;
+    border: 0;
+    background: var(--green);
+    color: #fff;
+    font-weight: 800;
+  }
+
+  .send:hover {
+    background: var(--green-d);
+  }
+
+  /* ===== 9. PAINEL LATERAL ===== */
+
+  aside {
+    display: grid;
+    gap: 16px;
+  }
+
+  .box {
+    padding: 16px 18px;
+  }
+
+  .box h2 {
+    margin: 0 0 10px;
+    font: 700 17px var(--disp);
+  }
+
+  .tests {
+    display: grid;
+    gap: 8px;
+  }
+
+  .t {
+    text-align: left;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 14px;
+    min-height: 48px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .t:hover {
+    border-color: var(--green);
+  }
+
+  .t.w {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border-color: var(--warn-line);
+  }
+
+  .t.r {
+    background: var(--err-bg);
+    color: var(--err-ink);
+    border-color: transparent;
+  }
+
+  .dl {
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 15px;
+  }
+
+  .dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 6px;
+  }
+
+  .dl dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  details summary {
+    cursor: pointer;
+    font-weight: 700;
+    min-height: 32px;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    font: 13px/1.5 ui-monospace,Menlo,monospace;
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 10px;
+    margin: 8px 0 0;
+  }
+
+  .small {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  /* ===== 10. RODAPÉ ===== */
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 0 16px 24px;
+  }
+
+  /* ===== 11. CELULAR E ACESSIBILIDADE ===== */
+
+  @media (max-width: 860px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+    .chat {
+      height: calc(100dvh - 150px);
+      min-height: 440px;
+    }
+    header {
+      padding-bottom: 26px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none!important;
+      scroll-behavior: auto!important;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- CABEÇALHO -->
+<header>
+ <div class="bar">
+  <div class="brand"><div class="logo" aria-hidden="true">🌿</div><div><h1>Vista Verdurão</h1><p>Atendimento do Cerrado para Brasília</p></div></div>
+  <div class="tools">
+   <span id="status" class="pill" role="status"><i></i><span>Assistente ativo</span></span>
+   <button class="icon-btn" id="theme" aria-label="Alternar tema claro e escuro" title="Alternar tema">◐</button>
+  </div>
+ </div>
+</header>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<main>
+   <!-- Chat -->
+ <section class="card chat" aria-label="Conversa com o assistente">
+  <div class="chat-h"><div><b>Fale com a gente</b><small>Estoque, entrega e troca no DF</small></div><button class="link" id="clear">Nova conversa</button></div>
+  <div id="log" role="log" aria-live="polite" aria-label="Mensagens"></div>
+  <div class="banner" id="banner"><span>Você está na fila do atendimento humano.</span><button class="link" id="back">Voltar ao assistente</button></div>
+  <div class="chips" id="chips" aria-label="Sugestões de pergunta"></div>
+  <form id="form" autocomplete="off">
+   <label for="msg" class="sr">Sua pergunta</label>
+   <input id="msg" placeholder="Pergunte sobre estoque, entrega ou troca" maxlength="300" required enterkeyhint="send">
+   <button class="send" type="submit">Enviar</button>
+  </form>
+ </section>
+
+ <!-- Painel lateral: testes e dados -->
+ <aside>
+  <div class="card box">
+   <h2>Testar o assistente</h2>
+   <div class="tests">
+    <button class="t" data-q="Vocês têm camiseta da Coleção Flona em estoque no DF?">Estoque e região</button>
+    <button class="t" data-q="Qual o prazo de entrega para Águas Claras e a política de troca?">Entrega e troca na mesma pergunta</button>
+    <button class="t w" data-q="Vocês vendem tênis de corrida da Nike?">Produto fora do catálogo</button>
+    <button class="t r" data-q="erro_sistema">Simular erro no banco de dados</button>
+   </div>
+  </div>
+  <div class="card box">
+   <h2>Dados que o assistente consulta</h2>
+   <dl class="dl" id="dl"></dl>
+   <details style="margin-top:12px"><summary>Ver regras do Prompt P-03</summary><pre id="prompt"></pre></details>
+   <p class="small">Prompt P-03 v2.0.0 · Temperatura 0,2 · Guardrail anti-alucinação ativo</p>
+  </div>
+ </aside>
+</main>
+<!-- RODAPÉ -->
+<footer>Residência Porto Digital IV · Squad 36 · Vista Verdurão</footer>
+
+<!-- LÓGICA DO ASSISTENTE -->
+<script>
+  /* ==========================================================================
+     VISTA VERDURÃO – ASSISTENTE DE ATENDIMENTO
+     Seções: 1. Dados  2. Atalhos  3. Motor de respostas  4. Interface  5. Início
+     ========================================================================== */
+
+
+  /* ==========================================================================
+     1. DADOS (banco simulado e prompt do agente)
+     ========================================================================== */
+
+  const DB = {
+    status: "SUCCESS",
+    data: {
+      loja: "Vista Verdurão DF",
+      produtos: [
+        { nome: "Camisa Algodão Orgânico Coleção Flona", tamanho: "M", quantidade: 45, preco: "R$ 119,90" },
+        { nome: "Bermuda Reciclada Coleção Cerrado",     tamanho: "G", quantidade: 12, preco: "R$ 149,90" }
+      ],
+      prazos_entrega_df: {
+        "Plano Piloto": "1 dia útil",
+        "Águas Claras": "2 dias úteis",
+        "Taguatinga":   "2 dias úteis"
+      },
+      politica_troca: "Prazo de 30 dias após o recebimento. Sem custo para a primeira troca na região do DF."
+    }
+  };
+
+  const P03_SYSTEM_PROMPT = `Você é a IA de Atendimento ao Cliente da Vista Verdurão. Responde sobre estoque, prazos de entrega e trocas no DF.
+
+1. Responda APENAS com base no bloco [ESTOQUE E POLITICAS].
+2. Produto fora do contexto: "Não encontrei essa informação no nosso catálogo no momento. Vou transferir seu atendimento para um especialista humano."
+3. Se status_consulta = "ERROR": "No momento, estou com dificuldades para acessar o sistema de estoque. Por favor, aguarde um instante enquanto conecto você a um de nossos atendentes."
+4. NUNCA prometa prazos, descontos ou trocas que não estejam nas regras.
+5. Seja cortês, objetiva e acolhedora.`;
+
+  const data = DB.data; // atalho
+
+
+  /* ==========================================================================
+     2. ATALHOS E FUNÇÕES AUXILIARES
+     ========================================================================== */
+
+  // Elementos da página
+  const $ = id => document.getElementById(id);
+  const log      = $('log');      // lista de mensagens
+  const input    = $('msg');      // campo de texto
+  const chips    = $('chips');    // botões de sugestão
+  const statusEl = $('status');   // etiqueta do cabeçalho
+  const banner   = $('banner');   // aviso de atendimento humano
+
+  // Remove acentos e põe em minúsculas, para comparar textos
+  const normalize = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // Impede que texto digitado vire HTML
+  const escapeHtml = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // Hora atual no formato 14:05
+  const horaAgora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const matches = (texto, regex) => regex.test(texto);
+
+  // Estado da conversa
+  const MENSAGEM_BOAS_VINDAS = {
+    role: 'bot',
+    html: '<p>Olá! Eu sou o assistente da <strong>Vista Verdurão</strong>.</p><p>Posso ajudar com estoque, prazo de entrega e trocas no Distrito Federal. É só perguntar ou tocar em uma sugestão.</p>',
+    t: horaAgora()
+  };
+  const SUGESTOES_INICIAIS = ['Tem camisa Flona?', 'Qual o prazo de entrega?', 'Como funciona a troca?', 'Falar com atendente'];
+
+  let mensagens = [];        // histórico exibido
+  let emAtendimentoHumano = false;
+  let aguardandoResposta = false;
+
+
+  /* ==========================================================================
+     3. MOTOR DE RESPOSTAS (regras fixas, só usa os dados acima)
+     Retorna { kind, html, handoff?, src?, chips? }
+     kind: 'b' = bot normal | 'h' = transferência | 'e' = erro
+     ========================================================================== */
+
+  // Card HTML de um produto
+  function cardProduto(p) {
+    const poucas = p.quantidade <= 15;
+    return `
+      <div class="prod">
+        <strong>${escapeHtml(p.nome)}</strong>
+        <div class="row"><span>Tamanho ${p.tamanho}</span><span>${p.preco}</span></div>
+        <div class="row">
+          <span class="tag ${poucas ? 'low' : ''}">${poucas ? 'Poucas unidades' : 'Disponível'}</span>
+          <span>${p.quantidade} em estoque</span>
+        </div>
+        <div class="bar-s" aria-hidden="true"><span style="width:${Math.min(100, p.quantidade * 2)}%"></span></div>
+      </div>`;
+  }
+
+  function responder(texto) {
+    const m = normalize(texto);
+
+    // Regra 3 do prompt: erro no banco -> atendente humano
+    if (DB.status === 'ERROR' || m.includes('erro_sistema')) {
+      return {
+        kind: 'e', handoff: true,
+        html: '<p>No momento, estou com dificuldades para acessar o sistema de estoque. Por favor, aguarde um instante enquanto conecto você a um de nossos atendentes.</p>'
+      };
+    }
+
+    // Cliente pediu uma pessoa
+    if (matches(m, /atendente|humano|pessoa de verdade|falar com alguem/)) {
+      return { kind: 'h', handoff: true, html: '<p>Claro! Vou conectar você a um atendente da equipe.</p>' };
+    }
+
+    // Regra 2 do prompt: produto fora do catálogo -> atendente humano
+    if (matches(m, /tenis|nike|adidas|sapato|sandalia|relogio|vestido|calca|jaqueta|mochila|bone/)) {
+      return {
+        kind: 'h', handoff: true,
+        html: '<p>Não encontrei essa informação no nosso catálogo no momento. Vou transferir seu atendimento para um especialista humano.</p>'
+      };
+    }
+
+    // Monta a resposta juntando uma parte para cada assunto encontrado
+    const partes = [];
+    const fontes = [];
+    let sugestoes = [];
+
+    // --- Estoque e produtos ---
+    const quer_camisa    = matches(m, /flona|camisa|camiseta|algodao/);
+    const quer_bermuda   = matches(m, /cerrado|bermuda|reciclad/);
+    const quer_estoque   = quer_camisa || quer_bermuda ||
+                           matches(m, /estoque|produto|colecao|catalogo|disponiv|preco|valor|quanto custa/);
+
+    if (quer_estoque) {
+      const especifico = quer_camisa || quer_bermuda;
+      const lista = especifico
+        ? data.produtos.filter((p, i) => (i === 0 && quer_camisa) || (i === 1 && quer_bermuda))
+        : data.produtos;
+
+      const intro = lista.length > 1 ? 'Estes são os itens disponíveis agora:' : 'Temos sim! Veja a disponibilidade:';
+      partes.push(`<p>${intro}</p>` + lista.map(cardProduto).join(''));
+      fontes.push('estoque');
+      sugestoes.push('Qual o prazo de entrega?');
+    }
+
+    // --- Prazo de entrega ---
+    const regiao = Object.keys(data.prazos_entrega_df).find(r => m.includes(normalize(r)));
+
+    if (regiao || matches(m, /prazo|entrega|entregam|frete|chega|receber/)) {
+      const linhas = Object.entries(data.prazos_entrega_df)
+        .map(([nome, prazo]) => `<tr class="${nome === regiao ? 'hit' : ''}"><td>${nome}</td><td>${prazo}</td></tr>`)
+        .join('');
+
+      const intro = regiao
+        ? `Para <strong>${regiao}</strong>, o prazo é de <strong>${data.prazos_entrega_df[regiao]}</strong>.`
+        : 'Estes são os prazos de entrega por região. Me diga a sua e eu destaco para você:';
+
+      partes.push(`<p>${intro}</p><table class="tbl"><tbody>${linhas}</tbody></table>`);
+      fontes.push('prazos de entrega');
+      if (!regiao) sugestoes.push(...Object.keys(data.prazos_entrega_df));
+    }
+
+    // --- Política de troca ---
+    if (matches(m, /troca|trocar|devol/)) {
+      partes.push(`<p><strong>Política de troca:</strong> ${escapeHtml(data.politica_troca)}</p>`);
+      fontes.push('política de troca');
+    }
+
+    // --- Nenhum assunto reconhecido ---
+    if (!partes.length) {
+      if (matches(m, /obrigad|valeu|brigad/)) {
+        return { kind: 'b', html: '<p>Por nada! Se precisar de mais alguma coisa, estou por aqui.</p>', chips: SUGESTOES_INICIAIS };
+      }
+      if (matches(m, /^(oi|ola|opa|e ai|bom dia|boa tarde|boa noite)/)) {
+        return { kind: 'b', html: '<p>Olá! Como posso ajudar hoje?</p>', chips: SUGESTOES_INICIAIS };
+      }
+      return { kind: 'b', html: '<p>Não tenho certeza se entendi. Posso ajudar com estas coisas:</p>', chips: SUGESTOES_INICIAIS };
+    }
+
+    // Sugestões padrão quando não há nada específico a sugerir
+    if (!sugestoes.length || regiao) {
+      sugestoes = ['Como funciona a troca?', 'Ver outros produtos', 'Falar com atendente'];
+    }
+
+    return {
+      kind: 'b',
+      html: partes.join(''),
+      src: fontes,
+      chips: [...new Set(sugestoes)].slice(0, 4) // sem repetidos, no máximo 4
+    };
+  }
+
+
+  /* ==========================================================================
+     4. INTERFACE
+     ========================================================================== */
+
+  // --- Painel lateral "Dados que o assistente consulta" ---
+  function montarPainelDeDados() {
+    const itensEstoque = data.produtos.map(p => {
+      const colecao = p.nome.split(' Coleção ')[1];
+      const rotulo = colecao ? 'Coleção ' + colecao : p.nome;
+      return `<div><dt>${escapeHtml(rotulo)}</dt><dd>${p.quantidade} un</dd></div>`;
+    });
+
+    const itensEntrega = Object.entries(data.prazos_entrega_df)
+      .map(([regiao, prazo]) => `<div><dt>Entrega: ${regiao}</dt><dd>${prazo}</dd></div>`);
+
+    const itemTroca = '<div><dt>Troca</dt><dd>30 dias, sem custo</dd></div>';
+
+    $('dl').innerHTML = [...itensEstoque, ...itensEntrega, itemTroca].join('');
+    $('prompt').textContent = P03_SYSTEM_PROMPT;
+  }
+
+  // --- Mensagens ---
+  function desenharMensagem(msg) {
+    const el = document.createElement('div');
+    el.className = 'm ' + (msg.role === 'user' ? 'u' : msg.kind || 'b');
+
+    const avatar    = msg.kind === 'h' ? '🎧' : '🤖';
+    const protocolo = msg.ticket ? `<div class="meta">Protocolo ${msg.ticket}. Um atendente continua a conversa por aqui.</div>` : '';
+    const fontes    = msg.src ? `<div class="src">Baseado em: ${msg.src.join(', ')}</div>` : '';
+
+    el.innerHTML = `
+      <div class="av" aria-hidden="true">${avatar}</div>
+      <div class="bub">
+        ${msg.html}
+        ${protocolo}
+        ${fontes}
+        <div class="meta">${msg.t}</div>
+      </div>`;
+
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function mostrarDigitando() {
+    const el = document.createElement('div');
+    el.className = 'm';
+    el.innerHTML = `
+      <div class="av" aria-hidden="true">🤖</div>
+      <div class="bub"><div class="typing" aria-label="Digitando"><i></i><i></i><i></i></div></div>`;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+
+  // --- Botões de sugestão ---
+  function mostrarSugestoes(lista) {
+    chips.innerHTML = '';
+    (lista || []).forEach(texto => {
+      const botao = document.createElement('button');
+      botao.type = 'button';
+      botao.className = 'chip';
+      botao.textContent = texto;
+      botao.onclick = () => enviar(texto);
+      chips.appendChild(botao);
+    });
+  }
+
+  // --- Atendimento humano: aviso, etiqueta do cabeçalho ---
+  function definirAtendimentoHumano(ativo) {
+    emAtendimentoHumano = ativo;
+    banner.classList.toggle('on', ativo);
+    statusEl.className = 'pill' + (ativo ? ' hum' : '');
+    statusEl.lastElementChild.textContent = ativo ? 'Atendimento humano' : 'Assistente ativo';
+  }
+
+  // --- Salvar e restaurar conversa (localStorage) ---
+  function salvarConversa() {
+    try { localStorage.setItem('vv-chat', JSON.stringify({ msgs: mensagens, handoff: emAtendimentoHumano })); } catch (e) {}
+  }
+
+  function desenharConversa() {
+    log.innerHTML = '';
+    mensagens.forEach(desenharMensagem);
+    definirAtendimentoHumano(emAtendimentoHumano);
+  }
+
+  function novaConversa() {
+    mensagens = [MENSAGEM_BOAS_VINDAS];
+    emAtendimentoHumano = false;
+    desenharConversa();
+    mostrarSugestoes(SUGESTOES_INICIAIS);
+    salvarConversa();
+    input.focus();
+  }
+
+  // --- Enviar uma pergunta ---
+  function enviar(texto) {
+    texto = texto.trim();
+    if (!texto || aguardandoResposta) return;
+
+    // Mensagem do cliente
+    const minha = { role: 'user', html: escapeHtml(texto), t: horaAgora() };
+    mensagens.push(minha);
+    desenharMensagem(minha);
+    mostrarSugestoes([]);
+    input.value = '';
+
+    // Já está com humano: só avisa
+    if (emAtendimentoHumano) {
+      const aviso = { role: 'bot', kind: 'h', html: '<p>Sua conversa já está com a equipe humana. Em instantes um atendente responde por aqui.</p>', t: horaAgora() };
+      mensagens.push(aviso);
+      desenharMensagem(aviso);
+      salvarConversa();
+      return;
+    }
+
+    // Resposta do assistente (com pequena pausa para parecer natural)
+    aguardandoResposta = true;
+    const digitando = mostrarDigitando();
+
+    setTimeout(() => {
+      digitando.remove();
+
+      const r = responder(texto);
+      const resposta = { role: 'bot', kind: r.kind, html: r.html, src: r.src, t: horaAgora() };
+      if (r.handoff) resposta.ticket = 'VV-' + Math.floor(1000 + Math.random() * 9000);
+
+      mensagens.push(resposta);
+      desenharMensagem(resposta);
+      if (r.handoff) definirAtendimentoHumano(true);
+      mostrarSugestoes(r.handoff ? [] : r.chips);
+
+      aguardandoResposta = false;
+      salvarConversa();
+    }, 700);
+  }
+
+  // --- Eventos ---
+  $('form').onsubmit = e => { e.preventDefault(); enviar(input.value); };
+  $('clear').onclick = novaConversa;
+
+  $('back').onclick = () => {
+    definirAtendimentoHumano(false);
+    const volta = { role: 'bot', html: '<p>Voltei! Em que posso ajudar?</p>', t: horaAgora() };
+    mensagens.push(volta);
+    desenharMensagem(volta);
+    mostrarSugestoes(SUGESTOES_INICIAIS);
+    salvarConversa();
+    input.focus();
+  };
+
+  // Botões "Testar o assistente"
+  document.querySelectorAll('.t').forEach(b => b.onclick = () => enviar(b.dataset.q));
+
+  // Alternar tema claro/escuro
+  $('theme').onclick = () => {
+    const raiz = document.documentElement;
+    const escuroAgora = raiz.dataset.theme === 'dark' ||
+      (raiz.dataset.theme === 'auto' && matchMedia('(prefers-color-scheme:dark)').matches);
+    raiz.dataset.theme = escuroAgora ? 'light' : 'dark';
+  };
+
+
+  /* ==========================================================================
+     5. INÍCIO
+     ========================================================================== */
+
+  montarPainelDeDados();
+
+  try {
+    const salvo = JSON.parse(localStorage.getItem('vv-chat') || 'null');
+    if (salvo && salvo.msgs && salvo.msgs.length) {
+      mensagens = salvo.msgs;
+      emAtendimentoHumano = !!salvo.handoff;
+    } else {
+      mensagens = [MENSAGEM_BOAS_VINDAS];
+    }
+  } catch (e) {
+    mensagens = [MENSAGEM_BOAS_VINDAS];
+  }
+
+  desenharConversa();
+  mostrarSugestoes(emAtendimentoHumano ? [] : SUGESTOES_INICIAIS);
+</script>
+</body>
+</html>
